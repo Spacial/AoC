@@ -5,6 +5,22 @@
 import sys
 
 
+def showstack(stack):
+    k = 1
+    for i in stack:
+        print(k, i)
+        k += 1
+    return
+
+
+def move(origin, to, stack, count=1):
+    if count == 0:
+        return stack 
+    else:
+        cargo = stack[origin].pop() # ou pop(0)
+        stack[to].append(cargo)
+    return move(origin, to, stack, count - 1)
+
 def part1(data):
     bkp = data
     comm = []
@@ -20,17 +36,24 @@ def part1(data):
         elif i == '':
             continue
         else:
-            comm.append(i)
+            if i.strip() != '': 
+                comm.append(i.strip())
     stacks = [[] for x in range(0, stks)]
     for i in range(0, s):
         for k in range(0, len(data[i])):
             if data[i][k] == '[':
                 c = data[i][k + 1]
-                print(i, k + 1, (k // 4) + 1 , c)
-                stacks[(k//4)+1].append(c)
-    print(stacks)
-    
-    return
+                stacks[(k//4)].insert(0, c)
+    #showstack(stacks)
+    for i in comm:
+        # print('---', i)
+        _, count, _, origin, _, to = i.split(' ')
+        move(int(origin) - 1, int(to) - 1, stacks, int(count))
+    #showstack(stacks)
+    message = ''
+    for i in stacks:
+        message += i.pop()
+    return message
 
 
 def part2(data):
@@ -39,7 +62,7 @@ def part2(data):
 
 entries = []
 for line in sys.stdin:
-    entries.append(line.strip())
+    entries.append(line)
 
 
 
