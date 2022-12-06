@@ -12,21 +12,11 @@ def showstack(stack):
         k += 1
     return
 
-
-def move(origin, to, stack, count=1):
-    if count == 0:
-        return stack 
-    else:
-        cargo = stack[origin].pop() # ou pop(0)
-        stack[to].append(cargo)
-    return move(origin, to, stack, count - 1)
-
-def part1(data):
-    bkp = data
+def parse(data):
     comm = []
     readed = True
     s = 0
-    for i in bkp:
+    for i in data:
         if '[' in i:
             s += 1
             continue
@@ -44,12 +34,30 @@ def part1(data):
             if data[i][k] == '[':
                 c = data[i][k + 1]
                 stacks[(k//4)].insert(0, c)
-    #showstack(stacks)
+    return stacks, comm
+
+
+def move(origin, to, stack, count=1):
+    if count == 0:
+        return stack 
+    else:
+        cargo = stack[origin].pop()
+        stack[to].append(cargo)
+    return move(origin, to, stack, count - 1)
+
+
+def newmove(origin, to, stack, count=1):
+    for i in stack[origin][len(stack[origin]) - count:len(stack[origin])]:
+        stack[to].append(i)
+    stack[origin] = stack[origin][0:len(stack[origin]) - count]
+    return stack
+
+
+def part1(data):
+    stacks, comm = parse(data)
     for i in comm:
-        # print('---', i)
         _, count, _, origin, _, to = i.split(' ')
         move(int(origin) - 1, int(to) - 1, stacks, int(count))
-    #showstack(stacks)
     message = ''
     for i in stacks:
         message += i.pop()
@@ -57,13 +65,18 @@ def part1(data):
 
 
 def part2(data):
-    return
+    stacks, comm = parse(data)
+    for i in comm:
+        _, count, _, origin, _, to = i.split(' ')
+        newmove(int(origin) - 1, int(to) - 1, stacks, int(count))
+    message = ''
+    for i in stacks:
+        message += i.pop()
+    return message
 
 
 entries = []
 for line in sys.stdin:
     entries.append(line)
 
-
-
-print(part1(entries))
+print(part2(entries))

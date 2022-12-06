@@ -37,7 +37,6 @@ def part2(data):
         k = max(elves, key=elves.get)
         v = max(elves.values())
         topsters[i] = v
-        #print(k,v)
         elves.pop(k)
     return sum(topsters.values()) 
 

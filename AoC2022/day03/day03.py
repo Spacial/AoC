@@ -14,12 +14,10 @@ def part1(data):
     for i in data:
         ruck = i[slice (0, len(i)//2)]
         sack = i[slice (len(i)//2, len(i))]
-        #print(len(ruck), len(sack), len(i), ':::', ruck, sack, i)
         found = set()
         for c in ruck:
             if c in sack:
                 found.add(c)
-        #print(found, priorities[found.pop()])
         total += priorities[found.pop()]
     return total
 
