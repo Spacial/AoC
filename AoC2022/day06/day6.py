@@ -4,34 +4,32 @@
 
 import sys
 
-def marker(count):
-    ones = 0
-    pos = 0
-    for i in count:
-        if count[i] == 1:
-            ones += 1
-        pos += 1
-        if ones == 4:
-            return pos
+def part1(data):
+    for i in range(0, len(data)):
+        mark = set()
+        for k in range(0, 4):
+            c = data[i + k]
+            if c not in mark:
+                mark.add(c)
+            else:
+                break
+        if len(mark) == 4:
+            return i + 4
     return 0
 
 
-def part1(data):
-    count = {}
-    for i in range(0, 26):
-        count[chr(97 + i)] = 0
-    point = 0
-    for i in data:
-         count[i] += 1
-         point += 1
-         if marker(count) > 4:
-            break
-    print(count)
-    return point - 3
-
-
 def part2(data):
-    return
+    for i in range(0, len(data)):
+        mark = set()
+        for k in range(0, 14):
+            c = data[i + k]
+            if c not in mark:
+                mark.add(c)
+            else:
+                break
+        if len(mark) == 14:
+            return i + 14
+    return 0
 
 
 entries = []
@@ -40,5 +38,5 @@ for line in sys.stdin:
 
 
 
-print(part1(entries[0]))
+print(part2(entries[0]))
 
