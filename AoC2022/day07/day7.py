@@ -8,13 +8,13 @@ import sys
 def getRevPath(path):
     new = []
     if len(path) == 1:
-        return path[0]
+        return [path[0]]
     else:
         return [path[:1], [getRevPath(path[1:])]]
 
 
 def part1(data):
-    lfs = []
+    lfs = {}
     curdir = ''
     path =  []
     for i in data:
@@ -24,11 +24,13 @@ def part1(data):
             if com == 'cd':
                 args = i.split(' ')[2]
                 if args == '..':
-                    #print('>> path b:', path)
-                    
                     print(getRevPath(path))
+
                     path.pop()
-                    #print('>> path a>', path)
+                elif args == '/':
+                    path = []
+                    path.append(args)
+                    curdir = args
                 else:
                     curdir = args
                     path.append(args)
@@ -44,7 +46,8 @@ def part1(data):
                 print(*espaco,' |--- ', file, ':', int(size))
 
             else:
-                #print('} dir:', file)          
+                #print('} dir:', file)
+                          
                 print(*espaco,' |--- ', file)
 
     return
