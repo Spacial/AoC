@@ -4,7 +4,6 @@
 
 import sys
 
-
 def push(lista, item):
     lista.append(item)
     return lista
@@ -24,18 +23,12 @@ def getNumbers(cmd, stack):
             if cmd[i:i+3] == 'mul':
                 i += 3
             if cmd[i] == '(':
-                # print('[I] S:', stack)
-                # print('[I] push', stack)
                 stack = push(stack,'mul')
-                # print('[I] S:', stack)
                 i += 1
                 work = getNumbers(cmd[i:], stack)
                 break
             elif cmd[i] == ')':              
-                # print('[I] S:', stack)
-                # print('[I] pop', stack)
                 stack = pop(stack)
-                # print('[I] S:', stack)
                 i += 1
                 work.append(ret)
                 break
@@ -44,7 +37,6 @@ def getNumbers(cmd, stack):
             else:
                 ret += cmd[i]
                 i += 1
-            # print('.', end='')
             if len(stack) == 0 or i >= len(cmd):
                 break
     except:
@@ -60,7 +52,6 @@ def getWork(cmd, stops):
         else:
             start = stops[s]
             finish = len(cmd)
-        # print('[I] stops:', start, finish, cmd[start:finish])
         work.append(getNumbers(cmd[start:finish], []))
     return work
 
@@ -69,7 +60,6 @@ def sumTotal(work):
     for w in work:
         if len(w) > 0:
             numbers = w[0].split(',')
-            # print('[I] Numbers:', numbers, w)
             if len(numbers) > 1:
                 if numbers[0].isdigit() and numbers[1].isdigit():
                     total += (int(numbers[0]) * int(numbers[1]))
@@ -77,44 +67,52 @@ def sumTotal(work):
 
 def part1(data):
     cmd = ''.join(data)
-    print("[I] total size :", len(cmd))
     stops = getPos(cmd)
     work = getWork(cmd, stops)
     total = sumTotal(work)
-    print('total work:', len(work))
     return total
 
 def cleanStops(stops, dos, donts):
-    print("[I] stops:", len(stops), stops)
-    print("[I] DO's:", len(dos), dos)
-    print("[I] DONT's:", len(donts), donts)
     d = 0
     n = 0
+    do = True
+    ret = []
     for s in stops:
         if s > dos[d] and s > donts[n]:
-            
-        if s > dos[d] and s < donts[n]:
-
-    return 
+            if dos[d] < donts [n]:
+                do = False
+            else:
+                do = True
+        elif s > dos[d]:
+            do = True
+            if n < (len(donts) - 1) and s > donts[n]:
+                do = False
+                n += 1
+            if d < (len(dos) - 1):
+                d += 1           
+        elif s > donts[n]:
+            do = False
+            if d < (len(dos) - 1) and s > dos[d]:
+                do = True
+                d += 1
+            if n < (len(donts) - 1):
+                n += 1
+        if do:
+            ret.append(s)
+    return ret
 
 
 def part2(data):
     cmd = ''.join(data)
-    print("[I] total size :", len(cmd))
     stops = getPos(cmd)
     donts = getPos(cmd, 'don\'t()')
     dos = getPos(cmd, 'do()')
-    # dos.insert(0, 0)
     cleaned = cleanStops(stops, dos, donts)
-    # work = getWork(cmd, stops)
-    #total = sumTotal(work)
-    #print('total work:', len(work))
-    total = 0 
+    work = getWork(cmd, cleaned)
+    total = sumTotal(work)
     return total
 
 
-entries1 = 'xmul(2,4)%&mul[3,7]!@^don\'t_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))mul(215,630/\')'
-entries = 'xmul(2,4)&mul[3,7]!^don\'t()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))'
 entries = []
 for line in sys.stdin:
     entries.append(line.strip())
